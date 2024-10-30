@@ -1,0 +1,82 @@
+body {
+    background-color: black;
+}
+
+.logo {
+    max-width: 200px; /* Ajusta el tamaño máximo del logo */
+    height: auto; /* Mantiene la proporción */
+    margin-bottom: 20px; /* Espacio debajo del logo */
+}
+
+.number-box {
+    background: linear-gradient(45deg, #ff007f, #7f00ff);
+    border: 2px solid #00ffcc;
+    border-radius: 15px;
+    color: white;
+    width: 65px;  /* Tamaño ajustado para la página principal */
+    height: 65px; /* Tamaño ajustado para la página principal */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+    font-size: 2rem; /* Tamaño de fuente más grande para la página principal */
+    text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.5);
+    transition: transform 0.3s, background 0.3s;
+}
+
+
+.modal-content {
+    background: black; /* Fondo oscuro degradado para la modal */
+}
+
+.modal-number-box {
+    background: linear-gradient(45deg, #ff007f, #7f00ff);
+    border: 2px solid #00ffcc;
+    border-radius: 15px;
+    color: white;
+    width: 40px;  /* Tamaño ajustado para la modal */
+    height: 40px; /* Tamaño ajustado para la modal */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+    font-size: 1.2rem; /* Tamaño de fuente más pequeño para la modal */
+    text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.5);
+    transition: transform 0.3s, background 0.3s;
+}
+
+.nav-link {
+    padding: 15px 20px; /* Espaciado más grande */
+    border-radius: 10px; /* Bordes redondeados */
+    transition: background 0.3s, color 0.3s; /* Transición suave */
+}
+
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.2); /* Fondo al pasar el mouse */
+    color: #00ffcc; /* Color de texto al pasar el mouse */
+}
+
+.btn-info {
+    margin-left: 20px; /* Espaciado entre el botón y el menú */
+}
+
+.btn-lg {
+    font-size: 1.2rem; /* Tamaño de fuente más grande para el botón */
+}
+
+.circle-number {
+    background-color: red; /* Color de fondo rojo */
+    color: white; /* Color de texto blanco */
+    width: 40px; /* Ancho del círculo */
+    height: 40px; /* Alto del círculo */
+    border-radius: 50%; /* Bordes redondeados */
+    display: flex; /* Para centrar el texto */
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    margin: auto; /* Centrar el círculo en la celda */
+}
+
+.btn {
+    margin-right: 5px; /* Espaciado entre los botones */
+}
+

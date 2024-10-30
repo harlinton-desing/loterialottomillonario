@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Números Disponibles</title>
+    <style>
+        body {
+            background-color: black;
+        }
+        h1, h2 {
+            color: lime;
+        }
+        .number-box {
+            background: linear-gradient(45deg, #ff007f, #7f00ff);
+            border: 2px solid #00ffcc;
+            border-radius: 15px;
+            color: white;
+            width: 60px; /* Tamaño ajustado */
+            height: 60px; /* Tamaño ajustado */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 5px;
+            font-size: 2rem; /* Tamaño de fuente ajustado */
+            text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.5);
+        }
+        .number-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .available-number-box {
+        background: linear-gradient(45deg, #007bff, #6610f2);
+        border: 2px solid #ffc107;
+        border-radius: 15px;
+        color: white;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 5px;
+        font-size: 2rem;
+        text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.5);
+    }
+        @media (max-width: 576px) {
+            .number-box {
+                width: 50px; /* Tamaño ajustado para pantallas pequeñas */
+                height: 50px;
+                font-size: 1.5rem; /* Tamaño de fuente ajustado para pantallas pequeñas */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="bg-dark text-light text-center py-4">
+        <h1>Mi Lotería</h1>
+        <nav>
+            <a class="nav-link text-light" href="index.html">Página Principal</a>
+            <a class="nav-link text-light" href="#pagados">Pagados</a>
+            <a class="nav-link text-light" href="#pendientes">Pendientes de Pago</a>
+        </nav>
+    </header>
+
+    <main class="container mt-5 text-center">
+        <h2 class="text-light">Números Disponibles</h2>
+        <div class="number-container" id="available-numbers-container">
+            <!-- Aquí se llenarán los números disponibles -->
+        </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function loadAvailableNumbers() {
+            const availableNumbersContainer = document.getElementById('available-numbers-container');
+            availableNumbersContainer.innerHTML = '';
+            for (let i = 0; i < 100; i++) {
+                const number = String(i).padStart(2, '0');
+                const numberBox = document.createElement('div');
+                numberBox.classList.add('number-box');
+                numberBox.textContent = number;
+                availableNumbersContainer.appendChild(numberBox);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", loadAvailableNumbers);
+
+        function updateAvailableNumbers() {
+    const availableNumbersContainer = document.getElementById('available-numbers-container');
+    availableNumbersContainer.innerHTML = '';
+    totalNumbers.forEach(number => {
+        if (!blackNumbers.includes(number)) {
+            const numberBox = document.createElement('div');
+            numberBox.classList.add('available-number-box'); // Cambia esta línea
+            numberBox.textContent = number;
+            availableNumbersContainer.appendChild(numberBox);
+        }
+    });
+    localStorage.setItem('blackNumbers', JSON.stringify(blackNumbers));
+}
+
+    </script>
+</body>
+</html>

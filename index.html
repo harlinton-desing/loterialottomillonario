@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Mi Página de Lotería</title>
+    <style>
+        body {
+            background-color: black;
+        }
+        h1, h2 {
+            color: lime;
+        }
+        .tab-content {
+            margin-top: 20px;
+        }
+        .number-box {
+            background: linear-gradient(45deg, #ff007f, #7f00ff);
+            border: 2px solid #00ffcc;
+            border-radius: 15px;
+            color: white;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 5px;
+            font-size: 2rem;
+            text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.5);
+        }
+        .black {
+            background: black;
+            color: black;
+            border: 2px solid #00ffcc;
+        }
+        .modal-content {
+            background-color: #222;
+            color: white;
+        }
+        .btn-custom {
+            background-color: #00ffcc;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        table {
+            color: white;
+        }
+        th, td {
+            text-align: center;
+        }
+        .pending-number {
+            background: linear-gradient(45deg, #ff007f, #7f00ff);
+            border-radius: 50%;
+            width: 65px;
+            height: 65px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+        }
+        .customer-number {
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff007f, #7f00ff);
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            font-size: 2rem;
+            color: white;
+        }
+        .paid-number {
+            border-radius: 50%;
+            background: green;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            font-size: 1.5rem;
+            color: white;
+        }
+        .number-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        @media (max-width: 576px) {
+            .number-box {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            .pending-number {
+                width: 50px;
+                height: 50px;
+            }
+            .customer-number {
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+       
+    </style>
+</head>
+<body>
+    <header class="bg-dark text-light text-center py-4">
+        <img src="imagen/logo.png" style="width: 150px;" class="mb-2">
+        
+        <h1>💲LOTTO MILLONARIO💲</h1>
+    </header>
+
+    <main class="container mt-5 text-center">
+        <ul class="nav nav-tabs justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link active" href="#home" data-toggle="tab">Página Principal</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#numeros-disponibles" data-toggle="tab">Números Disponibles</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#pagados" data-toggle="tab">Pagados</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#pendientes" data-toggle="tab">Pendientes de Pago</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="home">
+                <h2 class="text-light">🎱Números de Lotería🎱</h2>
+                <div class="number-container" id="number-container">
+                    <!-- Los números se generarán aquí -->
+                </div>
+                <button id="reset-button" class="btn btn-danger mt-4">Reiniciar Todo</button>
+            </div>
+            <div class="tab-pane fade" id="numeros-disponibles">
+                <h2 class="text-light">🎱Números Disponibles🎱</h2>
+                <div class="row">
+                    <div class="col text-left">
+                        <h5 class="text-light">💵PREMIO<mark>$150.000</mark></h5>
+                        <h5 class="text-light"><img src="imagen/nequi-logo.png" style="width: 60px;" alt="">3103509843</h5>
+                        
+                    </div>
+                    <div class="col text-right">
+                        <h5 class="text-light">💰VALOR<mark>$2.000</mark></h5>
+                        <h5 class="text-light"><img src="imagen/daviplata-logo.png" style="width: 40px;" alt="">3103509843</h5>
+                    </div>
+                </div>
+                <div class="number-container" id="available-numbers-container">
+                    <!-- Aquí se llenarán los números disponibles -->
+                </div>
+                <button id="download-button"></button>
+            </div>
+            <div class="tab-pane fade" id="pagados">
+                <h2 class="text-light">💰Clientes Pagados💰</h2>
+                <button id="download-excel-button" class="btn btn-info mb-3">📄Descargar Excel</button>
+                <table class="table table-dark mt-4">
+                    <thead>
+                        <tr>
+                            <th>Número</th>
+                            <th>Nombre</th>
+                            <th>Celular</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paid-clients">
+                        <!-- Aquí se llenarán los datos de clientes pagados -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade" id="pendientes">
+                <h2 class="text-light">🔴Clientes Pendientes🔴</h2>
+                <table class="table table-dark mt-4">
+                    <thead>
+                        <tr>
+                            <th>Número</th>
+                            <th>Nombre</th>
+                            <th>Celular</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pending-clients">
+                        <!-- Aquí se llenarán los datos de clientes pendientes -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para ingresar datos del cliente -->
+    <div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="customerModalLabel">Ingrese los Datos del Cliente</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="customer-number" id="selected-number-circle">
+                        <span id="selected-number" class="circle-number"></span>
+                    </div>
+                    <form id="customer-form">
+                        <div class="form-group">
+                            <label for="customer-name">Nombre</label>
+                            <input type="text" class="form-control" id="customer-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-phone">Número de Celular</label>
+                            <input type="tel" class="form-control" id="customer-phone" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="submit-button">Asignar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script>
+        let pendingClients = [];
+        let paidClients = [];
+        let blackNumbers = [];
+        let totalNumbers = [];
+
+        // Cargar datos desde localStorage
+        function loadData() {
+            const savedPending = localStorage.getItem('pendingClients');
+            const savedPaid = localStorage.getItem('paidClients');
+            const savedBlackNumbers = localStorage.getItem('blackNumbers');
+
+            if (savedPending) pendingClients = JSON.parse(savedPending);
+            if (savedPaid) paidClients = JSON.parse(savedPaid);
+            if (savedBlackNumbers) blackNumbers = JSON.parse(savedBlackNumbers);
+        }
+
+        // Generar números del 00 al 99
+        function generateNumbers() {
+            totalNumbers = Array.from({length: 100}, (_, i) => String(i).padStart(2, '0'));
+            const numberContainer = document.getElementById('number-container');
+            numberContainer.innerHTML = '';
+            totalNumbers.forEach(number => {
+                const numberBox = document.createElement('div');
+                numberBox.classList.add('number-box');
+                numberBox.textContent = number;
+                if (blackNumbers.includes(number)) {
+                    numberBox.classList.add('black');
+                }
+                numberBox.onclick = function() {
+                    if (numberBox.classList.contains('black')) {
+                        numberBox.classList.remove('black');
+                        blackNumbers = blackNumbers.filter(num => num !== number);
+                    } else {
+                        document.getElementById('selected-number').textContent = number;
+                        document.getElementById('selected-number-circle').style.display = 'flex';
+                        $('#customerModal').modal('show');
+                    }
+                    localStorage.setItem('blackNumbers', JSON.stringify(blackNumbers));
+                    updateAvailableNumbers();
+                };
+                numberContainer.appendChild(numberBox);
+            });
+            updateAvailableNumbers();
+        }
+
+        // Mostrar números disponibles
+        function updateAvailableNumbers() {
+            const availableNumbersContainer = document.getElementById('available-numbers-container');
+            availableNumbersContainer.innerHTML = '';
+            totalNumbers.forEach(number => {
+                if (!blackNumbers.includes(number)) {
+                    const numberBox = document.createElement('div');
+                    numberBox.classList.add('number-box');
+                    numberBox.textContent = number;
+                    availableNumbersContainer.appendChild(numberBox);
+                }
+            });
+            localStorage.setItem('blackNumbers', JSON.stringify(blackNumbers));
+        }
+
+        // Descargar la sección de números disponibles como PNG
+        document.getElementById('download-button').addEventListener('click', function() {
+            html2canvas(document.getElementById('available-numbers-container')).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'numeros_disponibles.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        });
+
+        function updatePendingClients() {
+            const pendingClientsTable = document.getElementById('pending-clients');
+            pendingClientsTable.innerHTML = '';
+            pendingClients.forEach(client => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><div class="pending-number">${client.number}</div></td>
+                    <td style="font-weight:bold;">${client.name.toUpperCase()}</td>
+                    <td style="font-weight:bold;">${client.phone}</td>
+                    <td>
+                        <button class="btn btn-success btn-sm" onclick="markAsPaid('${client.number}')">Pagó</button>
+                        <button class="btn btn-warning btn-sm" onclick="releaseNumber('${client.number}')">Liberar</button>
+                        <button class="btn btn-info btn-sm" onclick="openWhatsApp('${client.phone}')">Enviar WhatsApp</button>
+                    </td>
+                `;
+                pendingClientsTable.appendChild(row);
+            });
+            localStorage.setItem('pendingClients', JSON.stringify(pendingClients));
+        }
+
+        function updatePaidClients() {
+            const paidClientsTable = document.getElementById('paid-clients');
+            paidClientsTable.innerHTML = '';
+            paidClients.forEach(client => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="paid-number">${client.number}</td>
+                    <td>${client.name.toUpperCase()}</td>
+                    <td>${client.phone}</td>
+                `;
+                paidClientsTable.appendChild(row);
+            });
+            localStorage.setItem('paidClients', JSON.stringify(paidClients));
+        }
+
+        function markAsPaid(number) {
+            const index = pendingClients.findIndex(client => client.number === number);
+            if (index !== -1) {
+                paidClients.push(pendingClients[index]);
+                pendingClients.splice(index, 1);
+                updatePendingClients();
+                updatePaidClients();
+            }
+        }
+
+        function releaseNumber(number) {
+            const index = pendingClients.findIndex(client => client.number === number);
+            if (index !== -1) {
+                blackNumbers = blackNumbers.filter(num => num !== number);
+                const numberBoxes = document.querySelectorAll('.number-box');
+                numberBoxes.forEach(box => {
+                    if (box.textContent == number) {
+                        box.classList.remove('black');
+                    }
+                });
+
+                pendingClients.splice(index, 1);
+                updatePendingClients();
+                generateNumbers();
+            }
+        }
+
+        function openWhatsApp(phone) {
+            const message = prompt("Escribe tu mensaje:");
+            if (message) {
+                const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+                window.open(url, '_blank');
+            }
+        }
+
+        function resetAll() {
+            totalNumbers = [];
+            pendingClients = [];
+            paidClients = [];
+            blackNumbers = [];
+            generateNumbers();
+            updatePendingClients();
+            updatePaidClients();
+            localStorage.removeItem('pendingClients');
+            localStorage.removeItem('paidClients');
+            localStorage.removeItem('blackNumbers');
+            alert('Todo ha sido reiniciado.');
+        }
+
+        function downloadExcel() {
+            const ws = XLSX.utils.json_to_sheet(paidClients.map(client => ({
+                'Número': client.number,
+                'Nombre': client.name,
+                'Celular': client.phone
+            })));
+
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Pagados');
+
+            XLSX.writeFile(wb, 'clientes_pagados.xlsx');
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            loadData();
+            generateNumbers();
+
+            document.getElementById('submit-button').addEventListener('click', function() {
+                const number = document.getElementById('selected-number').textContent;
+                const name = document.getElementById('customer-name').value;
+                const phone = document.getElementById('customer-phone').value;
+
+                pendingClients.push({ number, name, phone });
+                updatePendingClients();
+
+                const numberBoxes = document.querySelectorAll('.number-box');
+                numberBoxes.forEach(box => {
+                    if (box.textContent == number) {
+                        box.classList.add('black');
+                        blackNumbers.push(number);
+                    }
+                });
+
+                alert(`Datos guardados:\nNúmero: ${number}\nNombre: ${name}\nCelular: ${phone}`);
+                document.getElementById('customer-form').reset();
+                $('#customerModal').modal('hide');
+            });
+
+            document.getElementById('download-excel-button').addEventListener('click', downloadExcel);
+            document.getElementById('reset-button').addEventListener('click', resetAll);
+        });
+
+        
+    </script>
+</body>
+</html>
