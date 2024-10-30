@@ -113,14 +113,11 @@
                 padding: 10px 0px;
             }
         }
-
-       
     </style>
 </head>
 <body>
     <header class="bg-dark text-light text-center py-4">
         <img src="imagen/logo.png" style="width: 150px;" class="mb-2">
-        
         <h1>💲LOTTO MILLONARIO💲</h1>
     </header>
 
@@ -154,17 +151,17 @@
                     <div class="col text-left">
                         <h5 class="text-light">💵PREMIO<mark>$150.000</mark></h5>
                         <h5 class="text-light"><img src="imagen/nequi-logo.png" style="width: 60px;" alt="">3103509843</h5>
-                        
                     </div>
                     <div class="col text-right">
                         <h5 class="text-light">💰VALOR<mark>$2.000</mark></h5>
                         <h5 class="text-light"><img src="imagen/daviplata-logo.png" style="width: 40px;" alt="">3103509843</h5>
                     </div>
                 </div>
+                <button id="download-button" class="btn btn-success mt-4">Descargar Números Disponibles como PNG</button>
                 <div class="number-container" id="available-numbers-container">
                     <!-- Aquí se llenarán los números disponibles -->
                 </div>
-                <button id="download-button"></button>
+               
             </div>
             <div class="tab-pane fade" id="pagados">
                 <h2 class="text-light">💰Clientes Pagados💰</h2>
@@ -184,6 +181,7 @@
             </div>
             <div class="tab-pane fade" id="pendientes">
                 <h2 class="text-light">🔴Clientes Pendientes🔴</h2>
+                <button id="download-pendientes-button" class="btn btn-primary mb-3">Descargar Pendientes como PNG</button>
                 <table class="table table-dark mt-4">
                     <thead>
                         <tr>
@@ -234,11 +232,58 @@
         </div>
     </div>
 
+    <!-- Modal para ingresar los datos del ticket -->
+<div class="modal fade" id="ticketModal" tabindex="-1" aria-labelledby="ticketModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ticketModalLabel">Ingrese los Datos del Ticket</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="ticket-form">
+                    <div class="form-group">
+                        <label for="ticket-name">Nombre</label>
+                        <input type="text" class="form-control" id="ticket-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ticket-number">Número</label>
+                        <input type="text" class="form-control" id="ticket-number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ticket-premio">Premio</label>
+                        <input type="text" class="form-control" id="ticket-premio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ticket-valor">Valor</label>
+                        <input type="number" class="form-control" id="ticket-valor" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ticket-nequi">Nequi</label>
+                        <input type="text" class="form-control" id="ticket-nequi" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ticket-daviplata">Daviplata</label>
+                        <input type="text" class="form-control" id="ticket-daviplata" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="generate-ticket-button">Generar Ticket</button>
+            </div>
+        </div>
+    </div>
+</div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <script>
         let pendingClients = [];
         let paidClients = [];
@@ -305,7 +350,7 @@
             html2canvas(document.getElementById('available-numbers-container')).then(canvas => {
                 const link = document.createElement('a');
                 link.download = 'numeros_disponibles.png';
-                link.href = canvas.toDataURL();
+                link.href = canvas.toDataURL('image/png');
                 link.click();
             });
         });
@@ -373,12 +418,36 @@
         }
 
         function openWhatsApp(phone) {
-            const message = prompt("Escribe tu mensaje:");
-            if (message) {
-                const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-                window.open(url, '_blank');
-            }
-        }
+    // Asegúrate de que el número tenga el formato correcto con el indicativo del país
+    const countryCode = '+57'; // Cambia este valor al indicativo que necesites
+    const formattedPhone = countryCode + phone; // Agrega el indicativo al número
+    const message = prompt("Escribe tu mensaje:");
+    if (message) {
+        const url = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
+        window.open(url, '_blank');
+    }
+}
+function updatePendingClients() {
+    const pendingClientsTable = document.getElementById('pending-clients');
+    pendingClientsTable.innerHTML = '';
+    pendingClients.forEach(client => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><div class="pending-number">${client.number}</div></td>
+            <td style="font-weight:bold;">${client.name.toUpperCase()}</td>
+            <td style="font-weight:bold;">${client.phone}</td>
+            <td>
+                <button class="btn btn-success btn-sm" onclick="markAsPaid('${client.number}')">Pagó</button>
+                <button class="btn btn-warning btn-sm" onclick="releaseNumber('${client.number}')">Liberar</button>
+                <button class="btn btn-info btn-sm" onclick="openWhatsApp('${client.phone}', '${client.name}', '${client.number}', 'Premio', 'Valor')">Enviar WhatsApp</button>
+            </td>
+        `;
+        pendingClientsTable.appendChild(row);
+    });
+    localStorage.setItem('pendingClients', JSON.stringify(pendingClients));
+}
+
+
 
         function resetAll() {
             totalNumbers = [];
@@ -436,7 +505,188 @@
             document.getElementById('reset-button').addEventListener('click', resetAll);
         });
 
-        
+       // Asegúrate de incluir este script después de que se haya cargado html2canvas
+
+document.getElementById('download-button').addEventListener('click', function() {
+    const element = document.getElementById('available-numbers-container');
+    
+    // Asegúrate de que el elemento no esté vacío
+    if (element.children.length === 0) {
+        alert("No hay números disponibles para descargar.");
+        return;
+    }
+
+    html2canvas(element, { scale: 2 }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'números_disponibles.png'; // Nombre del archivo
+        link.href = canvas.toDataURL('image/png'); // Convierte el canvas a URL de imagen
+        link.click(); // Inicia la descarga
+    }).catch(err => {
+        console.error('Error al capturar la imagen:', err);
+    });
+});
+document.getElementById('download-pendientes-button').addEventListener('click', function() {
+    const element = document.getElementById('pendientes'); // Capturamos el contenedor principal
+    const originalDisplay = element.style.display; // Guardamos el estado original de display
+
+    // Ocultamos el botón de descarga
+    const downloadButton = document.getElementById('download-pendientes-button');
+    downloadButton.style.display = 'none';
+
+    // Aseguramos que los números de celular tengan una clase especial para el desenfoque
+    const phoneNumbers = element.querySelectorAll('#pending-clients td:nth-child(3)'); // Selecciona la columna de teléfonos
+    phoneNumbers.forEach(num => {
+        num.style.filter = 'blur(5px)'; // Aplica desenfoque
+    });
+
+    // Asegúrate de que el elemento no esté vacío
+    const clientsTable = document.getElementById('pending-clients');
+    if (clientsTable.children.length === 0) {
+        alert("No hay clientes pendientes para descargar.");
+        downloadButton.style.display = 'block'; // Mostramos el botón de nuevo
+        return;
+    }
+
+    // Usamos html2canvas para capturar la imagen
+    html2canvas(element, { scale: 2 }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'clientes_pendientes.png'; // Nombre del archivo
+        link.href = canvas.toDataURL('image/png'); // Convierte el canvas a URL de imagen
+        link.click(); // Inicia la descarga
+
+        // Restauramos el estado original de display
+        downloadButton.style.display = 'block'; // Mostramos el botón de nuevo
+        phoneNumbers.forEach(num => {
+            num.style.filter = ''; // Elimina el desenfoque
+        });
+        element.style.display = originalDisplay; // Restauramos el contenedor
+    }).catch(err => {
+        console.error('Error al capturar la imagen:', err);
+        downloadButton.style.display = 'block'; // Mostramos el botón de nuevo en caso de error
+        phoneNumbers.forEach(num => {
+            num.style.filter = ''; // Elimina el desenfoque en caso de error
+        });
+    });
+});
+
+
+function generarTicket(nombre, numero, premio, valor) {
+    const fechaActual = new Date().toLocaleDateString();
+    const nequi = "3103509843"; // Cambia esto por tu número de Nequi
+    const daviplata = "3103509843"; // Cambia esto por tu número de Daviplata
+
+    // Crear un contenedor para el ticket
+    const ticketDiv = document.createElement('div');
+    ticketDiv.style.position = 'absolute';
+    ticketDiv.style.background = 'white';
+    ticketDiv.style.padding = '20px';
+    ticketDiv.style.border = '1px solid #ccc';
+    ticketDiv.style.borderRadius = '5px';
+    ticketDiv.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+    ticketDiv.style.zIndex = '1000'; // Asegúrate de que esté por encima
+
+    ticketDiv.innerHTML = `
+        <h2 style="text-align:center;">🎟️ Ticket de Lotería 🎟️</h2>
+        <p><strong>Nombre:</strong> ${nombre}</p>
+        <p><strong>Fecha:</strong> ${fechaActual}</p>
+        <p><strong>Número:</strong> ${numero}</p>
+        <p><strong>Premio:</strong> $${150000}</p>
+        <p><strong>Valor:</strong> $${2000}</p>
+        <p><strong>Nequi:</strong> ${nequi}</p>
+        <p><strong>Daviplata:</strong> ${daviplata}</p>
+    `;
+
+    document.body.appendChild(ticketDiv); // Agregar el ticket al DOM
+
+    // Usar html2canvas para convertir el ticket en imagen
+    html2canvas(ticketDiv).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'ticket_loteria.png'; // Nombre del archivo
+        link.href = canvas.toDataURL('image/png'); // Convierte el canvas a URL de imagen
+        link.click(); // Inicia la descarga
+
+        document.body.removeChild(ticketDiv); // Eliminar el ticket del DOM
+    }).catch(err => {
+        console.error('Error al generar el ticket:', err);
+        document.body.removeChild(ticketDiv); // Asegúrate de eliminar el ticket
+    });
+}
+
+function openWhatsApp(phone, nombre, numero, premio, valor) {
+    generarTicket(nombre, numero, premio, valor);
+    
+    // Esperar a que se genere la imagen antes de abrir WhatsApp
+    setTimeout(() => {
+        const message = `Hola, ${nombre}! Aquí tienes tu ticket de lotería.\nNúmero: ${numero}\nPremio: ${premio}\nValor: $${valor}`;
+        const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+        window.open(url, '_blank');
+    }, 1000); // Esperar un segundo para permitir que se descargue la imagen
+}
+
+// Asegúrate de que en updatePendingClients se llame correctamente a openWhatsApp
+
+
+// Modifica la función para actualizar los clientes pendientes
+function updatePendingClients() {
+    const pendingClientsTable = document.getElementById('pending-clients');
+    pendingClientsTable.innerHTML = '';
+    pendingClients.forEach(client => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><div class="pending-number">${client.number}</div></td>
+            <td style="font-weight:bold;">${client.name.toUpperCase()}</td>
+            <td style="font-weight:bold;">${client.phone}</td>
+            <td>
+                <button class="btn btn-success btn-sm" onclick="markAsPaid('${client.number}')">Pagó</button>
+                <button class="btn btn-warning btn-sm" onclick="releaseNumber('${client.number}')">Liberar</button>
+                <button class="btn btn-info btn-sm" onclick="openWhatsApp('${client.phone}', '${client.name}', '${client.number}', 'Premio', 'Valor')">Enviar WhatsApp</button>
+            </td>
+        `;
+        pendingClientsTable.appendChild(row);
+    });
+    localStorage.setItem('pendingClients', JSON.stringify(pendingClients));
+}
+
+
+// Modifica la función para enviar WhatsApp
+function openWhatsApp(phone, nombre, numero, premio, valor) {
+    generarTicket(nombre, numero, premio, valor);
+    const message = `Hola, ${nombre}! Aquí tienes tu ticket de lotería.\nNúmero: ${numero}\nPremio: ${premio}\nValor: $${valor}\nEnvío Nequi: ${nequi}\nEnvío Daviplata: ${daviplata}`;
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+}
+
+
+// Guardar datos en localStorage
+document.getElementById('generate-ticket-button').addEventListener('click', function() {
+    const name = document.getElementById('ticket-name').value;
+    const number = document.getElementById('ticket-number').value;
+    const premio = document.getElementById('ticket-premio').value;
+    const valor = document.getElementById('ticket-valor').value;
+    const nequi = document.getElementById('ticket-nequi').value;
+    const daviplata = document.getElementById('ticket-daviplata').value;
+
+    localStorage.setItem('ticketName', name);
+    localStorage.setItem('ticketNumber', number);
+    localStorage.setItem('ticketPremio', premio);
+    localStorage.setItem('ticketValor', valor);
+    localStorage.setItem('ticketNequi', nequi);
+    localStorage.setItem('ticketDaviplata', daviplata);
+});
+
+// Recuperar datos al cargar la página
+window.onload = function() {
+    document.getElementById('ticket-name').value = localStorage.getItem('ticketName') || '';
+    document.getElementById('ticket-number').value = localStorage.getItem('ticketNumber') || '';
+    document.getElementById('ticket-premio').value = localStorage.getItem('ticketPremio') || '';
+    document.getElementById('ticket-valor').value = localStorage.getItem('ticketValor') || '';
+    document.getElementById('ticket-nequi').value = localStorage.getItem('ticketNequi') || '';
+    document.getElementById('ticket-daviplata').value = localStorage.getItem('ticketDaviplata') || '';
+};
+
+
+
+
     </script>
 </body>
 </html>
